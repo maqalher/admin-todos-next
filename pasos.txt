@@ -1,0 +1,88 @@
+ npx create-next-app
+    admin-todos
+        tp yes
+        es yes
+        tail yes
+        src yes
+        app yes
+        alias no
+
+        npm run dev
+
+crear docker-compose.yml en raiz
+
+version: '3'
+
+services:
+  todosDB:
+    image: postgres:15.3
+    container_name: todos-db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+levantar imagen de docker
+    docker compose up -d
+
+Prisma ORM
+    https://www.prisma.io/docs/orm/overview/introduction/what-is-prisma
+    https://vercel.com/guides/nextjs-prisma-postgres
+    npx prisma init
+        y
+            crea archivo .env y carpeta prisma
+                cambia a DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+                crear modelo
+                npx prisma migrate dev
+                    entre name: dev
+                npx prisma generate  -> genera cliente
+
+crear en src/lib/prisma.ts
+import { PrismaClient } from '@prisma/client';
+
+let prisma: PrismaClient;
+
+if (process.env.NODE_ENV === 'production') {
+  prisma = new PrismaClient();
+} else {
+  if (!(global as any).prisma) {
+    (global as any).prisma = new PrismaClient();
+  }
+  prisma = (global as any).prisma;
+}
+
+export default prisma;
+
+
+npx prisma db pull -> genera los modelos desde la bd despues hay que hacer 
+* npx prisma generate * para crear el modelo en next *** Detener el server si marca error
+
+para actualziar desde el server(cambios en schema.prisma)
+  npx prisma db push
+
+  npx prisma migrate db elimina todas las tablas y hay que ejecutar otra vez el seed
+
+Yup validatio schema 
+  npm i yup
+
+react iconos
+https://react-icons.github.io/react-icons/
+npm install react-icons --save
+
+actualizar proyectos
+  https://www.npmjs.com/package/npm-check-updates
+  npm install -g npm-check-updates
+    npx npm-check-updates  o  ncu
+      ncu --upgrade
+        npm install o npm i
+          forzar instalacion    npm install --force   ----  npm install --legacy-peer-deps
+
+
+cookies next 
+  https://www.npmjs.com/package/cookies-next
+  npm install --save cookies-next
+
